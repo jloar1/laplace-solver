@@ -1,0 +1,52 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# define your matrix with either of the below methods
+
+# method 1 - direct
+# u = np.array([ [0.0, 0.0, 0.0, 0.0, 0.0],
+# 									[0.0, 0.0, 0.0, 0.0, 1.0],
+# 									[0.0, 0.0, 0.0, 0.0, 2.0],
+# 									[0.0, 0.0, 0.0, 0.0, 3.0],
+# 									[0.0, 1.0, 2.0, 3.0, 4.0]
+# 									])
+
+# method 2 - from forumla(s)
+u = np.zeros((101, 201))
+
+for i, element in enumerate(u[0]):
+    x = (i-100) / 10.0
+    u[0][i] = -0.1 * (x ** 2) + 10
+	
+
+array_prev = np.copy(u)
+
+# iterate over matrix using FDM
+for n in range(300):
+    for i in range(1, u.shape[0] - 1):
+        for j in range(1, u.shape[1] - 1):
+            u[i, j] = 0.25 * (u[i+1, j] + u[i-1, j] + u[i, j+1] + u[i, j-1])
+            
+    # check if array has changed since last iteration, if not, exit loop
+    if (u == array_prev).all():
+        print(n+1)
+        break
+    else:
+        array_prev = np.copy(u)
+
+# print the matrix
+print(u)
+
+# graph the matrix
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+
+x, y = np.meshgrid((np.arange(u.shape[1]) - 100) / 10.0, np.arange(u.shape[0]) / 10.0)
+
+ax.plot_surface(x, y, u)
+
+ax.set_xlabel('x')
+ax.set_ylabel('y')
+ax.set_zlabel('u')
+
+plt.show()
